@@ -1,6 +1,11 @@
 """Models and database functions for Ratings project."""
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from flask_sqlalchemy import SQLAlchemy
+SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
 
 # This is the connection to the PostgreSQL database; we're getting this through
 # the Flask-SQLAlchemy helper library. On this, we can find the `session`
@@ -80,7 +85,7 @@ def connect_to_db(app):
 
     # had to add user name and password to URI, why??????
     # Configure to use our PstgreSQL database 
-    app.config['SQLALCHEMY_DATABASE_URI'] = ''
+    app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
     db.init_app(app)
