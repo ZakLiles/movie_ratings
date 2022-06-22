@@ -83,7 +83,6 @@ class Rating(db.Model):
 def connect_to_db(app):
     """Connect the database to our Flask app."""
 
-    # had to add user name and password to URI, why??????
     # Configure to use our PstgreSQL database 
     app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

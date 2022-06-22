@@ -2,7 +2,7 @@
 
 from jinja2 import StrictUndefined
 
-from flask import (Flask, render_template, redirect, request, flash, session)
+from flask import (Flask, render_template, redirect, request, flash, session, url_for)
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import User, Rating, Movie, connect_to_db, db
@@ -41,11 +41,14 @@ def register_user():
         #Process form data
         email = request.form["email"]
         password = request.form["password"]
-        user = User.query.filter_by(email=email)
-        if not user:
+        user = User.query.filter_by(email=email).all()
+
+        if len(user) == 0:
+            print('user not found')
             user = User(email=email, password=password)
-            db.session.add_user(user)
+            db.session.add(user)
             db.session.commit()
+            return redirect(url_for('index'))   
     else:
         return render_template("register_user.html")
 
