@@ -52,6 +52,37 @@ def register_user():
     else:
         return render_template("register_user.html")
 
+@app.route("/login", methods = ["GET", "POST"])
+def login_user():
+    """Login User"""
+
+    if request.method == "POST":
+        email = request.form["email"]
+        password = request.form["password"]
+        user = User.query.filter_by(email=email).all()[0]
+
+        if user.password == password:
+            flash("Logged in.")
+            session["user_id"] = user.user_id
+            return redirect(url_for('index')) 
+        else:
+            flash("Incorrect password")
+    
+    return render_template("login.html")
+
+@app.route("/logout")
+def logout():
+    if not session.get("user_id"):
+        flash("You are not logged in")
+    else:
+        session.pop("user_id")
+        flash("You are logged out")
+    return redirect(url_for("index"))
+
+@app.route("/users/<int:user_id>")
+def show_user(user_id):
+    user = User.query.filter_by(user_id=user_id).all()[0]
+    return render_template("user.html", user=user)
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
