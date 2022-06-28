@@ -81,6 +81,7 @@ def logout():
 
 @app.route("/users/<int:user_id>")
 def show_user(user_id):
+    # ratings = db.session.query(Movie, Rating).filter(Movie.movie_id == Rating.movie_id).filter(Rating.user_id==196).all()
     user = User.query.filter_by(user_id=user_id).all()[0]
     return render_template("user.html", user=user)
 

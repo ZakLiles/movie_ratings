@@ -28,6 +28,25 @@ class User(db.Model):
     age = db.Column(db.Integer, nullable=True)
     zipcode = db.Column(db.String(15), nullable=True)
 
+    @classmethod
+    def get_by_id(cls, user_id):
+        """Get a user from database by ID and return instance."""
+
+        QUERY = """SELECT user_id, email, password
+                   FROM users WHERE user_id = :id"""
+        cursor = db.session.execute(QUERY, {'id': user_id})
+        user_id, email, password = cursor.fetchone()
+        return cls(user_id, email, password)
+
+    def change_password(self, password):
+        """Change password for the user."""
+
+        QUERY = ("UPDATE users SET password = :password " +
+                 "WHERE user_id = :id")
+        db.session.execute(QUERY, {'password': password,
+                                   'id': self.user_id})
+        db.session.commit()
+
     def __repr__(self):
         """Provide helpful representation when printed."""
 
