@@ -64,7 +64,7 @@ def login_user():
         if user.password == password:
             flash("Logged in.")
             session["user_id"] = user.user_id
-            return redirect(url_for('index')) 
+            return redirect(url_for('show_user', user_id=user.user_id)) 
         else:
             flash("Incorrect password")
     
@@ -81,9 +81,10 @@ def logout():
 
 @app.route("/users/<int:user_id>")
 def show_user(user_id):
-    # ratings = db.session.query(Movie, Rating).filter(Movie.movie_id == Rating.movie_id).filter(Rating.user_id==196).all()
     user = User.query.filter_by(user_id=user_id).all()[0]
-    return render_template("user.html", user=user)
+    ratings = db.session.query(Movie, Rating).filter(Movie.movie_id == Rating.movie_id).filter(Rating.user_id==user_id).all()
+    print(len(ratings))
+    return render_template("user.html", user=user, ratings=ratings)
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the

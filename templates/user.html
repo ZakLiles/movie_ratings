@@ -7,4 +7,10 @@
     <p>{{ user.age }}</p>
     <h3>Zip Code:</h3>
     <p>{{ user.zipcode }}</p>
+    <h3>Movie Ratings:</h3>
+    <ul>
+        {% for movie, rating in ratings %}
+          <li>{{ movie.title }} : {{ rating.score }}</li>
+        {% endfor %}
+    </ul>
 {% endblock %}
