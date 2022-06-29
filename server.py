@@ -72,6 +72,8 @@ def login_user():
 
 @app.route("/logout")
 def logout():
+    """Logout."""
+
     if not session.get("user_id"):
         flash("You are not logged in")
     else:
@@ -81,10 +83,27 @@ def logout():
 
 @app.route("/users/<int:user_id>")
 def show_user(user_id):
+    """Show user info."""
+
     user = User.query.filter_by(user_id=user_id).all()[0]
     ratings = db.session.query(Movie, Rating).filter(Movie.movie_id == Rating.movie_id).filter(Rating.user_id==user_id).all()
-    print(len(ratings))
     return render_template("user.html", user=user, ratings=ratings)
+
+@app.route("/movies")
+def movie_list():
+    """Show list of movies."""
+
+    movies = Movie.query.order_by(Movie.title).all()
+    return render_template("movie_list.html", movies=movies)
+
+@app.route("/movies/<int:movie_id>")
+def show_movie(movie_id):
+    """Show movie info."""
+
+    movie = Movie.query.filter_by(movie_id=movie_id).all()[0]
+    ratings = db.session.query(Movie, Rating).filter(Movie.movie_id == Rating.movie_id).filter(Movie.movie_id==movie_id).all()
+
+    return render_template("movie.html", movie=movie, ratings=ratings)
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
