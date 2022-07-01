@@ -96,14 +96,22 @@ def movie_list():
     movies = Movie.query.order_by(Movie.title).all()
     return render_template("movie_list.html", movies=movies)
 
-@app.route("/movies/<int:movie_id>")
+@app.route("/movies/<int:movie_id>", methods = ["GET", "POST"])
 def show_movie(movie_id):
     """Show movie info."""
 
-    movie = Movie.query.filter_by(movie_id=movie_id).all()[0]
-    ratings = db.session.query(Movie, Rating).filter(Movie.movie_id == Rating.movie_id).filter(Movie.movie_id==movie_id).all()
+    if request.method == "POST":
+        score = request.form["score"]
+        user_id = session["user_id"]
+        rating = Rating(user_id=user_id, movie_id=movie_id, score=score)
+        db.session.add(rating)
+        db.session.commit()
+        return redirect(url_for('show_movie', movie_id=movie_id))
+    else:
+        movie = Movie.query.filter_by(movie_id=movie_id).all()[0]
+        ratings = db.session.query(Movie, Rating).filter(Movie.movie_id == Rating.movie_id).filter(Movie.movie_id==movie_id).all()
 
-    return render_template("movie.html", movie=movie, ratings=ratings)
+        return render_template("movie.html", movie=movie, ratings=ratings)
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the

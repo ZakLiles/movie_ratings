@@ -6,11 +6,28 @@
     <h3>Release Date:</h3>
     <p>{{ movie.released_at }}</p>
     <h3>IMDB URL:</h3>
-    <p>{{ movie.imdb_url }}</p>
+    <a href="{{ movie.imdb_url }}">{{ movie.imdb_url }}</a>
     <h3>Movie Ratings:</h3>
     <ul>
         {% for movie, rating in ratings %}
           <li>{{ rating.user_id }} : {{ rating.score }}</li>
         {% endfor %}
     </ul>
+    {% if session.get("user_id") %}
+      <form method="POST" action="{{ url_for('show_movie', movie_id=movie.movie_id) }}">
+        <p>Movie Rating:</p>
+        <input type="radio" id="score1" name="score" value="1">
+        <label for="score1">1</label>
+        <input type="radio" id="score2" name="score" value="2">
+        <label for="score2">2</label>
+        <input type="radio" id="score3" name="score" value="3">
+        <label for="score3">3</label>
+        <input type="radio" id="score4" name="score" value="4">
+        <label for="score4">4</label>
+        <input type="radio" id="score5" name="score" value="5">
+        <label for="score5">5</label>
+        <button type="submit">Submit</button>
+      </form>
+    {% endif %}
+
 {% endblock %}
