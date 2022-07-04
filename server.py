@@ -102,12 +102,18 @@ def show_movie(movie_id):
 
     if request.method == "POST":
         score = request.form["score"]
-        user_id = session["user_id"]
-        rating = Rating(user_id=user_id, movie_id=movie_id, score=score)
-        db.session.add(rating)
-        db.session.commit()
+        user_id = session.get("user_id")
+        user_rating = Rating.query.filter_by(movie_id=movie_id, user_id=user_id).all()
+        if len(user_rating) == 0:
+            rating = Rating(user_id=user_id, movie_id=movie_id, score=score)
+            db.session.add(rating)
+            db.session.commit()
+        else:
+            user_rating[0].score = score
+            db.session.commit()
         return redirect(url_for('show_movie', movie_id=movie_id))
     else:
+
         movie = Movie.query.filter_by(movie_id=movie_id).all()[0]
         ratings = db.session.query(Movie, Rating).filter(Movie.movie_id == Rating.movie_id).filter(Movie.movie_id==movie_id).all()
 
